@@ -1,6 +1,5 @@
 ## RGB-A ##
 
-On GitHub https://github.com/hurdleg/RGBA.git
+On GitHub https://github.com/saad0033/RGBA.git
 
-Please read my //TODO comments for you :)
-> View > Tool Windows > TODO
+A simple RGBA colour picker

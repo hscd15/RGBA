@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements Observer
 {
     // CLASS VARIABLES
     private static final String ABOUT_DIALOG_TAG = "About";
+    private static final String MENU_DIALOG_TAG = "Menu";
     private static final String LOG_TAG          = "RGBA";
 
     // INSTANCE VARIABLES
@@ -39,12 +43,15 @@ public class MainActivity extends AppCompatActivity implements Observer
     private TextView            mColorSwatch;
     private RGBAModel           mModel;
     private SeekBar             mRedSB;
-    //TODO: declare private members for mGreenSB, mBlueSB, and mAlphaSB
+    private SeekBar             mGreenSB;
+    private SeekBar             mBlueSB;
+    private SeekBar             mAlphaSB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // Instantiate a new AboutDialogFragment()
         // but do not show it (yet)
@@ -57,24 +64,35 @@ public class MainActivity extends AppCompatActivity implements Observer
         mModel.setGreen( RGBAModel.MIN_RGB );
         mModel.setBlue( RGBAModel.MIN_RGB );
         mModel.setAlpha( RGBAModel.MAX_ALPHA );
+
         // The Model is observing this Controller (class MainActivity implements Observer)
         mModel.addObserver( this );
 
         // reference each View
         mColorSwatch = (TextView) findViewById( R.id.colorSwatch );
         mRedSB = (SeekBar) findViewById( R.id.redSB );
-        //TODO: reference the remaining <SeekBar>s: green, blue and alpha
+        mGreenSB = (SeekBar) findViewById( R.id.greenSB );
+        mBlueSB = ( SeekBar ) findViewById( R.id.blueSB );
+        mAlphaSB = ( SeekBar ) findViewById( R.id.alphaSB );
 
         // set the domain (i.e. max) for each component
         mRedSB.setMax( RGBAModel.MAX_RGB );
-        //TODO: setMax() for the remaining <SeekBar>s: green, blue and alpha
+        mGreenSB.setMax( RGBAModel.MAX_RGB );
+        mBlueSB.setMax( RGBAModel.MAX_RGB );
+        mAlphaSB.setMax( RGBAModel.MAX_ALPHA );
 
         // register the event handler for each <SeekBar>
         mRedSB.setOnSeekBarChangeListener( this );
-        //TODO: register the remaining <SeekBar>s: green, blue and alpha
+        mGreenSB.setOnSeekBarChangeListener( this );
+        mBlueSB.setOnSeekBarChangeListener( this );
+        mAlphaSB.setOnSeekBarChangeListener( this );
 
+        mModel.setAlpha( RGBAModel.MAX_ALPHA );
+        mAlphaSB.setProgress( mModel.getAlpha() );
         // initialize the View to the values of the Model
         this.updateView();
+
+
     }
 
     @Override
@@ -93,11 +111,37 @@ public class MainActivity extends AppCompatActivity implements Observer
                 mAboutDialog.show( getFragmentManager(), ABOUT_DIALOG_TAG );
                 return true;
 
+            case R.id.action_black:
+                mModel.asBlack();
+                return true;
+
+            case R.id.action_blue:
+                mModel.asBlue();
+                return true;
+
+            case R.id.action_cyan:
+                mModel.asCyan();
+                return true;
+
+            case R.id.action_green:
+                mModel.asGreen();
+                return true;
+
+            case R.id.action_magenta:
+                mModel.asMagenta();
+                return true;
+
             case R.id.action_red:
                 mModel.asRed();
                 return true;
 
-            //TODO: handle the remaining menu items
+            case R.id.action_yellow:
+                mModel.asYellow();
+                return true;
+
+            case R.id.action_white:
+                mModel.asWhite();
+                return true;
 
             default:
                 Toast.makeText(this, "MenuItem: " + item.getTitle(), Toast.LENGTH_LONG).show();
@@ -122,14 +166,15 @@ public class MainActivity extends AppCompatActivity implements Observer
         // GET the SeekBar's progress, and SET the model to it's new value
         switch ( seekBar.getId() ) {
             case R.id.redSB:
-                mModel.setRed( mRedSB.getProgress() );
+                mModel.setRed(mRedSB.getProgress());
                 break;
-
-            //TODO: case R.id.greenSB
-
-            //TODO: case R.id.blueSB
-
-            //TODO: case R.id.alphaSB
+            case R.id.greenSB:
+                mModel.setGreen(mGreenSB.getProgress());
+                break;
+            case R.id.blueSB:
+                mModel.setBlue(mBlueSB.getProgress());
+            case  R.id.alphaSB:
+                mModel.setAlpha( mAlphaSB.getProgress() );
         }
     }
 
@@ -151,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements Observer
     }
 
     private void updateBlueSB() {
-        //TODO: set the blueSB's progress to the model's blue value
+        mBlueSB.setProgress( mModel.getBlue() );
     }
 
     private void updateColorSwatch() {
@@ -162,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements Observer
     }
 
     private void updateGreenSB() {
-        //TODO: set the greenSB's progress to the model's green value
+        mGreenSB.setProgress( mModel.getGreen() );
     }
 
     private void updateRedSB() {
